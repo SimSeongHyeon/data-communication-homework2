@@ -1,15 +1,15 @@
+import json
+import numpy as np
 from ast import literal_eval
 
+def dict_to_str(dictionary):
+    return json.dumps(dictionary)
 
-def dict_to_str(dict: dict):
-    """
-    딕셔너리 타입을 문자열로 반환
-    """
-    return str(dict)
+def str_to_dict(string):
+    return json.loads(string)
 
+def matrix_to_dict(matrix):
+    return {"matrix": matrix.tolist()}
 
-def str_to_dict(str: str):
-    """
-    문자열 타입을 딕셔너리 타입으로 반환
-    """
-    return literal_eval(str)
+def dict_to_matrix(dictionary):
+    return np.array(dictionary["matrix"])

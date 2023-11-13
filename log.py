@@ -1,27 +1,34 @@
-import datetime
+from datetime import datetime
 
+class TimePrint:
+    def __init__(self, message, timestamp=None):
+        if timestamp is None:
+            timestamp = self.get_current_time()
+        self.timestamp = timestamp
+        self.message = message
 
-def TimePrint(msg, upTime=-1):
-    """
-    출력 예시: [2023-09-26 22:26:12 001s]msg or [2023-09-26 22:26:12]msg
-    """
-    now = datetime.datetime.now()
-    now = now.strftime("%Y-%m-%d %H:%M:%S")
-    if upTime >= 0:
-        msg = f"[{now} {upTime:03d}s]{msg}"
-    else:
-        msg = f"[{now}]{msg}"
-    print(msg)
-    return msg
+    def __str__(self):
+        return f"[{self.timestamp}] {self.message}"
 
+    def get_current_time(self):
+        now = datetime.now()
+        return now.strftime("%Y-%m-%d %H:%M:%S")
+
+def log_event(message):
+    time_print = TimePrint(message)
+    print(str(time_print))  # 또는 로그 파일에 쓰도록 수정
+
+def log_result(round_num, timestamp, result_matrix):
+    time_print = TimePrint(f"Round {round_num} result: {result_matrix}", timestamp)
+    print(str(time_print))  # 또는 로그 파일에 쓰도록 수정
 
 class Log:
     def __init__(self, filename):
-        self.f = open(filename, "w")
+        self.filename = filename
 
-    def write(self, txt=""):
-        self.f.write(txt)
-        self.f.write("\n")
+    def write(self, message):
+        with open(self.filename, 'a') as file:
+            file.write(str(message) + '\n')
 
     def save(self):
-        self.f.close()
+        pass
