@@ -25,6 +25,10 @@ def receive_data(socket):
     data = socket.recv(1024).decode()
     return data
 
+def perform_matrix_multiplication(my_matrix, other_matrix):
+    result_matrix = np.dot(my_matrix, other_matrix)
+    return result_matrix
+
 def main():
     # 서버와 연결 설정
     server_socket = connect_to_server()
@@ -33,7 +37,7 @@ def main():
     send_data(server_socket, f'Client {CLIENT_NUMBER}')
 
     # 연산을 진행할 행렬 생성
-    matrix_list = matrix_list()
+    matrix_list_var = matrix_list()
     my_matrix = random_matrix()
 
     round_num = 1
@@ -56,17 +60,17 @@ def main():
             other_matrix = str_to_arr(other_matrix_str)
             
             # 행렬 곱셈 연산 수행
-            result_matrix = np.dot(my_matrix, other_matrix)
+            result_matrix = perform_matrix_multiplication(my_matrix, other_matrix)
 
             # 서버로 결과 전송
-            result_matrix_str = arr_to_str(result_matrix)
+            result_matrix_str = arr_to_str(result_matrix)   
             send_data(server_socket, result_matrix_str)
 
             # 서버로부터 라운드 종료 메시지 수신
             receive_data(server_socket)
 
             # 결과 행렬 업데이트
-            matrix_list[round_num % 6] = result_matrix
+            matrix_list_var[round_num % 6] = result_matrix
         round_num += 1
 
     # 클라이언트 종료 메시지 전송
@@ -82,10 +86,10 @@ def matrix_list():
     """
     연산 결과를 저장할 10x10 크기의 행렬 6개 생성
     """
-    matrixList = []
+    matrix_list_var = []
     for i in range(6):
-        matrixList.append(np.empty((10, 10)))
-    return matrixList
+        matrix_list_var.append(np.empty((10, 10)))
+    return matrix_list_var
 
 def random_matrix(rangeMin=0, rangeMax=100, row=10, col=10):
     """
@@ -106,8 +110,8 @@ def str_to_arr(s):
     """
     return np.array(list(map(int, s.split())))
 
-def matrix_to_dict(matrix):
-    return matrix.tolist()  # NumPy 배열을 리스트로 변환하여 반환
+def matrix_to_dict(matrix_var):
+    return matrix_var.tolist()  # NumPy 배열을 리스트로 변환하여 반환
 
 def dict_to_matrix(matrix_dict):
     return np.array(matrix_dict)  # 리스트를 NumPy 배열로 변환하여 반환
